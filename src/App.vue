@@ -1,17 +1,32 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <teamItem v-for="team in teams" :team="team" v-bind:key="team.id"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import axios from 'axios';
+import TeamItem from './components/TeamItem.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    TeamItem
+  },
+
+  data() {
+    return {
+      teams: [],
+    }
+  },
+
+  mounted() {
+    axios.get("https://api.collegefootballdata.com/teams/fbs").then (res => {
+      let teamResponse = res.data;
+      let bigTen = teamResponse.filter(team => team.conference === "Big Ten");
+      this.teams = bigTen;
+      console.log(this.teams);
+    });
   }
 }
 </script>
